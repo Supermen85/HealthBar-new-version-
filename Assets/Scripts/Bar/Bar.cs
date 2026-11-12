@@ -2,27 +2,32 @@ using UnityEngine;
 
 public class Bar<T> : MonoBehaviour where T : BarRenderer
 {
-    private T _barRender;
+    [SerializeField] private Health _health;
 
-    private float _maxValue = 1;
+    private T _barRender;
 
     private void Awake()
     {
         _barRender = GetComponent<T>();
     }
 
-    public void SetMaxValue(float value)
+    private void Start()
     {
-        _maxValue = value;
+        _barRender.SetStartingValue(_health.MaxValue);
     }
 
-    public void SetStartingValue()
+    private void OnEnable()
     {
-        _barRender.SetStartingValue(_maxValue);
+        _health.ValueChanged += ChangeValue;
     }
 
-    public void ChangeValue(float value)
+    private void OnDisable()
     {
-        _barRender.ChangeValue(value, _maxValue);
+        _health.ValueChanged -= ChangeValue;
+    }
+
+    private void ChangeValue(float value, float maxValue)
+    {
+        _barRender.ChangeValue(value, maxValue);
     }
  }

@@ -11,6 +11,9 @@ public abstract class BarRenderer : MonoBehaviour
     {
         CurrentValue = value;
 
+        SliderBar.minValue = 0;
+        SliderBar.maxValue = value;
+
         SliderBar.value = value;
     }
 

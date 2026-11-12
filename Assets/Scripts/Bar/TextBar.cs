@@ -4,21 +4,25 @@ using UnityEngine;
 public class TextBar : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _textBar;
+    [SerializeField] private Health _health;
 
-    private float _maxValue = 1;
-
-    public void SetMaxValue(float value)
+    private void Start()
     {
-        _maxValue = value;
+        ChangeValue(_health.MaxValue, _health.MaxValue);
     }
 
-    public void SetStartingValue()
+    private void OnEnable()
     {
-        SetValues(_maxValue);
+        _health.ValueChanged += ChangeValue;        
     }
 
-    public void SetValues(float value)
+    private void OnDisable()
     {
-        _textBar.text = $"Здоровье игрока: {value} / {_maxValue}";
+        _health.ValueChanged -= ChangeValue;
+    }
+
+    private void ChangeValue(float value, float MaxValue)
+    {
+        _textBar.text = $"Здоровье игрока: {value} / {MaxValue}";
     }
 }

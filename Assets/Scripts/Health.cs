@@ -1,42 +1,32 @@
 using System;
 using UnityEngine;
 
-[RequireComponent(typeof(HealthRenderer))]
-
 public class Health : MonoBehaviour
 {
-    [SerializeField] private int _maxValue = 100;
+    [field: SerializeField] public int MaxValue { get; private set; } = 100;
 
     public event Action Died;
-
-    private HealthRenderer _healthRenderer;
+    public event Action<float, float> ValueChanged;
 
     private int _currentValue;
 
-    private void Awake()
-    {
-        _healthRenderer = GetComponent<HealthRenderer>();
-    }
-
     private void Start()
     {
-        _currentValue = _maxValue;
-        _healthRenderer.SetMaxValue(_maxValue);
-        _healthRenderer.SetStartingValue();
+        _currentValue = MaxValue;
     }
 
     public void Heal(int healPower)
     {
-        _currentValue = Mathf.Min(_maxValue, _currentValue + healPower);
-
-        _healthRenderer.ChangeValue(_currentValue);
+        _currentValue = Mathf.Min(MaxValue, _currentValue + healPower);
+        
+        ValueChanged?.Invoke(_currentValue, MaxValue);
     }
 
     public void TakeDamge(int damage)
     {
         _currentValue = Mathf.Max(0, _currentValue - damage);
-
-        _healthRenderer.ChangeValue(_currentValue);
+        
+        ValueChanged?.Invoke(_currentValue, MaxValue);
 
         if (IsDead())
             Died?.Invoke();
